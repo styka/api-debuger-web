@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html data-ng-app="app" data-ng-controller="Api">
+<head>
+<meta charset="UTF-8" />
+<title>Api</title>
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css"/> -->
+<link rel="stylesheet" href="{{css}}">
+<link rel="stylesheet" href="../../css/common.css">
+<link rel="stylesheet" href="api.css">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-resource.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="../../js/restApiHostUtil.js"></script>
+<script src="api.js"></script>
+</head>
+<body>
+	<div class="container">
+
+		<div class="row">
+			<div class="btn-group col-sm" role="group">
+				<a href="#" ng-click="setCSS('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css')">Standard</a>
+				|
+				<a href="#" ng-click="setCSS('http://bootswatch.com/slate/bootstrap.css')">Slate</a>
+				||
+				<b>Results settings:</b>
+				asJSON=<a href="#" ng-click="switchResultsAsJSON()">{{ resultsAsJSON }}</a>,
+				inTransposition=<a href="#" ng-click="switchResultsInTransposition()">{{ resultsInTransposition==null ? "auto" : resultsInTransposition }}</a>
+			</div>
+		</div>
+
+		<div class="row">
+			<h2 class="well">
+				API :) <span class="restApiHostSpan">{{ restApiHost }}</span>
+			</h2>
+		</div>
+
+		<div class="row">
+			<ul class="nav nav-tabs walletNav">
+				<li role="presentation" ng-repeat="apiController in apiControllers" ng-class="apiController.class" ng-click="getApiController(apiController)"><a href="#" ng-click="setCurrentApiController(apiController)">{{ apiController.name }}</a></li>
+			</ul>
+		</div>
+
+		<div class="row">
+			<div class="btn-group col-sm" role="group">
+				<a href="#" class="btn btn-default {{apiRequestMapping.class}}" ng-repeat="apiRequestMapping in apiRequestMappings" ng-click="selectApiRequestMapping(apiRequestMapping)"><b>{{ apiRequestMapping.method }}</b>: {{ apiRequestMapping.value }}</a>
+			</div>
+		</div>
+
+		<hr />
+		<div class="row" ng-if="selectedApiRequestMapping!=null">
+			<div>
+				<b>{{ requestInfo }}</b>
+			</div>
+			<div class="currentApiRequestParameterSection">
+				<div ng-repeat="currentApiRequestParameter in currentApiRequestParameters">
+					[GET] {{currentApiRequestParameter.name}} <input type="text" ng-model="currentApiRequestParameter.value" />
+				</div>
+			</div>
+			<div class="currentApiRequestPostPutParameterSection">
+				<div ng-repeat="currentApiRequestPostPutParameter in currentApiRequestPostPutParameters">
+					[POST/PUT] {{currentApiRequestPostPutParameter.name}} <input type="text" ng-model="currentApiRequestPostPutParameter.value" />
+				</div>
+			</div>
+			<a href="#" class="btn btn-default" ng-click="executeSelectedApiRequestMapping()">Execute</a>
+		</div>
+		<div class="row" ng-if="(resultsInTransposition==null && results.length>1) || (resultsInTransposition!=null && !resultsInTransposition)">
+			<div class="table-responsive">
+				<table class="table table-bordered table-hover table-striped">
+					<thead>
+						<tr >
+							<th ng-if="resultsAsJSON">JSON</th>
+							<th ng-if="!resultsAsJSON" ng-repeat="apiRequestResponseParameter in apiRequestResponseParameters">{{ apiRequestResponseParameter.name }}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-if="resultsAsJSON" ng-repeat="result in results">
+							<td>{{ result }}</td>
+						</tr>
+						<tr ng-if="!resultsAsJSON" ng-repeat="result in results">
+							<td ng-repeat="value in result">{{ result[apiRequestResponseParameters[$index].name] }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row" ng-if="(resultsInTransposition==null && results.length==1) || resultsInTransposition">
+			<div class="table-responsive">
+				<table class="table table-bordered table-hover table-striped">
+					<tr ng-if="resultsAsJSON">
+						<td class="headerCell">JSON</td>
+						<td ng-repeat="result in results" >{{ result }}</td>
+					</tr>
+					<tr ng-if="!resultsAsJSON" ng-repeat="apiRequestResponseParameter in apiRequestResponseParameters">
+						<td class="headerCell">{{ apiRequestResponseParameter.name }}</td>
+						<td ng-repeat="result in results">{{ result[apiRequestResponseParameter.name] }}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="row">{{ responseInfo }}</div>
+
+	</div>
+</body>
+</html>

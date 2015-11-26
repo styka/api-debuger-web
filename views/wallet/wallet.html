@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html data-ng-app="app">
+<head>
+<meta charset="UTF-8"/>
+<title>Wallet</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css">
+<link rel="stylesheet" href="../../css/common.css">
+<link rel="stylesheet" href="wallet.css">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-resource.js"></script>
+<script src="../../js/restApiHostUtil.js"></script>
+<script src="wallet.js"></script>
+</head>
+<body data-ng-controller="Operation">
+<div class="container">
+
+<div class="row">
+	<h2 class="well">Wallet :) <span class="restApiHostSpan">{{ restApiHost }}</span></h2>
+	<ul class="nav nav-tabs walletNav">
+	  <li role="presentation" class="active"><a href="#">Operacje</a></li>
+	  <li role="presentation"><a href="#">Definicje operacji</a></li>
+	  <li role="presentation"><a href="#">Harmonogramy zdarzeń</a></li>
+	  <li role="presentation"><a href="#">Stan kont/portfeli</a></li>
+	</ul>
+</div>
+
+<div class="row">
+	<button id="showOperationActionsButton" class="btn btn-default" style="display: none;" ng-click="showOperationActions()">Akcje...</button>
+	<button id="hideOperationActionsButton" class="btn btn-default" style="display: none;" ng-click="hideOperationActions()">Ukryj akcje...</button>
+	<form style="display: none;" class="form-horizontal" id="operationActionForm">
+		<div class="form-group">
+			<label for="operation.id" class="col-sm-2">Id</label>
+			<div id="operation.id" class="col-sm-5">{{ operation.id }}</div>
+		</div>
+		<div class="form-group">
+			<label for="operation.date" class="col-sm-2">Data</label>
+			<div id="operation.date" class="col-sm-5">{{ operation.date | date:'yyyy-MM-dd HH:mm:ss' }}</div>
+		</div>
+		<div class="form-group">
+			<label for="operation.amount" class="col-sm-2">Kwota</label>
+			<div class="col-sm-5">
+				<input id="operation.amount" type="text" ng-model="operation.amount" class="form-control input-sm"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="operation.title" class="col-sm-2">Opis</label>
+			<div class="col-sm-5">
+				<input id="operation.title" type="text" ng-model="operation.title" class="form-control input-sm"/>
+			</div>
+		</div>
+		<div class="row">
+			<div class="btn-group col-sm-4" role="group">
+				<button class="btn btn-default" ng-click="createOperation(operation)">Zapisz nowy</button>
+				<button id="updateOperationButton" type="button" class="btn btn-default" ng-click="updateOperation(operation)" disabled="disabled">Zapisz</button>
+				<button id="deleteOperationButton" type="button" class="btn btn-default" ng-click="deleteOperation(operation.id)" disabled="disabled">Usuń</button>
+			</div>
+			<div class="btn-group col-sm-4" role="group">
+				<button class="btn btn-default" ng-click="resetOperation(true)">Wyczyść</button>
+				<button class="btn btn-default" ng-click="loadGenerateOperation()">Generuj</button>
+			</div>
+		</div>
+		<div style="margin-top: 5px;"><i>{{message}}</i></div>
+	</form>
+</div>
+
+<div class="row">
+	<div class="table-responsive">
+		<table class="table table-bordered table-hover table-striped">
+			<thead>
+				<tr class="operationHeader">
+					<th>Id</th>
+					<th>Data</th>
+					<th>Kwota</th>
+					<th>Opis</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="operation in operations" ng-click="getOperation(operation)">
+					<td>{{ operation.id }}</td>
+					<td>{{ operation.date | date:'yyyy-MM-dd HH:mm:ss' }}&nbsp;</td>
+					<td>{{ operation.amount }}</td>
+					<td>{{ operation.title }}</v>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+</div>
+</body>
+</html>

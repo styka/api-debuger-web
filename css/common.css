@@ -1,0 +1,22 @@
+body {
+	padding: 25px;
+	padding-top: 0px;
+}
+
+hr {
+	color: #DDD;
+}
+
+form {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.restApiHostSpan {
+	font-size: 8pt;
+}
+
+.headerCell{
+	background-color: #2E3338;
+	font-weight: bold;
+}
