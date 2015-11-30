@@ -18,7 +18,3 @@ function getUrl(url) {
 		return url;
 	}
 }
-function getRestApiHostDescription() {
-	return restApiHost != null && restApiHost != "" ? "[Rest API host: "
-			+ restApiHost + "]" : null;
-}

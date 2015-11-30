@@ -6,3 +6,134 @@
 	margin-top: 5px;
 	margin-bottom: 5px
 }
+.methodGET{
+	background-color: blue;
+	border-radius: 5px;
+	font-weight: blue;
+	font-size: 12px;
+	padding: 1px 5px;
+	color: white;
+}
+.methodPOST{
+	background-color: green;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: 12px;
+	padding: 1px 5px;
+	color: white;
+}
+.methodPUT{
+	background-color: orange;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: 12px;
+	padding: 1px 5px;
+	color: black;
+}
+.methodDELETE{
+	background-color: red;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: 12px;
+	padding: 1px 5px;
+	color: white;
+}
+.chooseMethodGETfalse{
+	background-color: blue;
+	border-radius: 5px;
+	font-weight: blue;
+	font-size: 12px;
+	padding: 1px 5px;
+	color: white;
+	border: 2px solid grey;
+	cursor: pointer;
+}
+.chooseMethodPOSTfalse{
+	background-color: green;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: 12px;
+	padding: 1px 5px;
+	color: white;
+	border: 2px solid grey;
+	cursor: pointer;
+}
+.chooseMethodPUTfalse{
+	background-color: orange;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: 12px;
+	padding: 1px 5px;
+	color: black;
+	border: 2px solid grey;
+	cursor: pointer;
+}
+.chooseMethodDELETEfalse{
+	background-color: red;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: 12px;
+	padding: 1px 5px;
+	color: white;
+	border: 2px solid grey;
+	cursor: pointer;
+}
+.chooseMethodGETtrue{
+	background-color: blue;
+	border-radius: 5px;
+	font-weight: blue;
+	font-size: 12px;
+	padding: 1px 5px;
+	color: white;
+	border: 2px solid yellow;
+	cursor: pointer;
+}
+.chooseMethodPOSTtrue{
+	background-color: green;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: 12px;
+	padding: 1px 5px;
+	color: white;
+	border: 2px solid yellow;
+	cursor: pointer;
+}
+.chooseMethodPUTtrue{
+	background-color: orange;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: 12px;
+	padding: 1px 5px;
+	color: black;
+	border: 2px solid yellow;
+	cursor: pointer;
+}
+.chooseMethodDELETEtrue{
+	background-color: red;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: 12px;
+	padding: 1px 5px;
+	color: white;
+	border: 2px solid yellow;
+	cursor: pointer;
+}
+.apiRequestMapping{
+	background-color: white;
+	border-radius: 5px;
+	font-size: 12px;
+	padding: 1px 5px;
+	color: black;
+	letter-spacing: 1px;
+}
+.apiRequestMappingChange{
+	background-color: white;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: 12px;
+	padding: 1px 5px;
+	color: black;
+	letter-spacing: 1px;
+	border: 1px solid green;
+	cursor: pointer;
+}

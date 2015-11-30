@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <title>Api</title>
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css"/> -->
-<link rel="stylesheet" href="{{css}}">
+<link id="cssFile" rel="stylesheet" href="http://bootswatch.com/slate/bootstrap.css">
 <link rel="stylesheet" href="../../css/common.css">
 <link rel="stylesheet" href="api.css">
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script>
@@ -17,89 +17,151 @@
 <body>
 	<div class="container">
 
-		<div class="row">
-			<div class="btn-group col-sm" role="group">
-				<a href="#" ng-click="setCSS('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css')">Standard</a>
-				|
-				<a href="#" ng-click="setCSS('http://bootswatch.com/slate/bootstrap.css')">Slate</a>
-				||
-				<b>Results settings:</b>
-				asJSON=<a href="#" ng-click="switchResultsAsJSON()">{{ resultsAsJSON }}</a>,
-				inTransposition=<a href="#" ng-click="switchResultsInTransposition()">{{ resultsInTransposition==null ? "auto" : resultsInTransposition }}</a>
+		<div class="row" style="margin-top: 10px;">
+			<div class="well">
+				<span style="float: left"><b>API:</b> {{ restApiHost }}</span>
+				<span style="float: right">
+					<b>Theme: </b>
+					<a id="themeStandard" href="#" ng-click="setCSS('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css','themeStandard')">Standard</a>
+					|
+					<a id="themeSlate" href="#" ng-click="setCSS('http://bootswatch.com/slate/bootstrap.css','themeSlate')">Slate</a>
+				</span>
+				<div style="clear: both;"></div>
 			</div>
 		</div>
 
 		<div class="row">
-			<h2 class="well">
-				API :) <span class="restApiHostSpan">{{ restApiHost }}</span>
-			</h2>
-		</div>
+			<div class="well">
+			
+				<div>
+					<b>REQUEST:</b>
+					<span ng-if="!apiRequestMappingChangeView" class="apiRequestMappingChange" ng-click="setApiRequestMappingChangeView(true)">select</span>
+					<span ng-if="apiRequestMappingChangeView" class="apiRequestMappingChange" ng-click="setApiRequestMappingChangeView(false)">hide</span>
+					<span ng-if="selectedApiRequestMapping!=null">
+						<span class="method{{ selectedApiRequestMapping.method }}">{{selectedApiRequestMapping.method}}</span>
+						<span class="apiRequestMapping">{{selectedApiRequestMapping.value}}</span>
+					</span> 
+					<a ng-if="selectedApiRequestMapping!=null" href="#" class="btn btn-default" style="padding: 5px 50px; float: right; margin-top: -5px;" ng-click="executeSelectedApiRequestMapping()">Execute</a>
+				</div>
 
-		<div class="row">
-			<ul class="nav nav-tabs walletNav">
-				<li role="presentation" ng-repeat="apiController in apiControllers" ng-class="apiController.class" ng-click="getApiController(apiController)"><a href="#" ng-click="setCurrentApiController(apiController)">{{ apiController.name }}</a></li>
-			</ul>
-		</div>
-
-		<div class="row">
-			<div class="btn-group col-sm" role="group">
-				<a href="#" class="btn btn-default {{apiRequestMapping.class}}" ng-repeat="apiRequestMapping in apiRequestMappings" ng-click="selectApiRequestMapping(apiRequestMapping)"><b>{{ apiRequestMapping.method }}</b>: {{ apiRequestMapping.value }}</a>
+				<div ng-if="apiRequestMappingChangeView" style="margin-bottom: 0px; margin-top: 15px;">
+					<table class="table table-bordered table-hover table-striped" style="margin: 0px;">
+						<thead>
+							<tr>
+								<th style="text-align: right; vertical-align: middle; width: 220px;">
+									<span class="chooseMethodGET{{(apiRequestMappingsFilter.methodGET)}}" ng-click="switchGETFilter()">GET</span>
+									<span class="chooseMethodPOST{{(apiRequestMappingsFilter.methodPOST)}}" ng-click="switchPOSTFilter()">POST</span>
+									<span class="chooseMethodPUT{{(apiRequestMappingsFilter.methodPUT)}}" ng-click="switchPUTFilter()">PUT</span>
+									<span class="chooseMethodDELETE{{(apiRequestMappingsFilter.methodDELETE)}}" ng-click="switchDELETEFilter()">DELETE</span>
+								</th>
+								<th><input type="text" ng-model="apiRequestMappingsFilter.value" placeholder="Filter by URL pattern"/></th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+				<div class="table-responsive" style="margin-top: 0px; max-height: 300px;" ng-if="apiRequestMappingChangeView">
+					<table class="table table-bordered table-hover table-striped" style="margin: 0px;">
+						<tbody>
+							<tr class="{{apiRequestMapping.active}}" style="cursor: pointer" ng-click="selectApiRequestMapping(apiRequestMapping)" ng-repeat="apiRequestMapping in apiRequestMappings | apiRequestMappingsFilterType:apiRequestMappingsFilter | orderBy:'value'">
+								<td style="text-align: right; width: 220px;"><span class="method{{ apiRequestMapping.method }}">{{apiRequestMapping.method}}</span></td>
+								<td><span class="apiRequestMapping">{{apiRequestMapping.value}}</span></td>
+							</tr>
+							<tr ng-if="apiRequestMappingsFilter.resultsCount==0">
+								<td colspan="2" style="text-align: center;"><i>...no results...</i></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div ng-if="apiRequestMappingChangeView">Rows: {{apiRequestMappingsFilter.resultsCount}}</div>
+				
 			</div>
 		</div>
 
-		<hr />
-		<div class="row" ng-if="selectedApiRequestMapping!=null">
-			<div>
-				<b>{{ requestInfo }}</b>
-			</div>
-			<div class="currentApiRequestParameterSection">
-				<div ng-repeat="currentApiRequestParameter in currentApiRequestParameters">
-					[GET] {{currentApiRequestParameter.name}} <input type="text" ng-model="currentApiRequestParameter.value" />
+		<div class="row" ng-if="currentApiRequestParameters!=null && currentApiRequestParameters.length>0">
+			<div class="well" style="text-align: center; width: 100%">
+				<span class="methodGET" ng-click="switchGETFilter()">GET</span>
+				<b>parameters</b>
+				<div class="row">
+					<table class="table table-bordered table-hover table-striped" style="margin-top: 10px;">
+						<tr ng-repeat="currentApiRequestParameter in currentApiRequestParameters">
+							<td style="width: 200px; text-align: right; vertical-align: middle;">{{currentApiRequestParameter.name}}</td>
+							<td style="text-align: left; vertical-align: middle;"><input type="text" ng-model="currentApiRequestParameter.value" /></td>
+						</tr>
+					</table>
 				</div>
 			</div>
-			<div class="currentApiRequestPostPutParameterSection">
-				<div ng-repeat="currentApiRequestPostPutParameter in currentApiRequestPostPutParameters">
-					[POST/PUT] {{currentApiRequestPostPutParameter.name}} <input type="text" ng-model="currentApiRequestPostPutParameter.value" />
+		</div>
+		
+		<div class="row" ng-if="currentApiRequestPostPutParameters!=null && currentApiRequestPostPutParameters.length>0">
+			<div class="well" style="text-align: center; width: 100%">
+				<span class="methodPOST" ng-click="switchPOSTFilter()">POST</span>
+				<span class="methodPUT" ng-click="switchPUTFilter()">PUT</span>
+				<b>parameters</b>
+				<div class="row">
+					<table class="table table-bordered table-hover table-striped" style="margin-top: 10px;">
+						<tr ng-repeat="currentApiRequestPostPutParameter in currentApiRequestPostPutParameters">
+							<td style="width: 200px; text-align: right;">{{currentApiRequestPostPutParameter.name}}</td>
+							<td style="text-align: left;"><input type="text" ng-model="currentApiRequestPostPutParameter.value" /></td>
+						</tr>
+					</table>
 				</div>
 			</div>
-			<a href="#" class="btn btn-default" ng-click="executeSelectedApiRequestMapping()">Execute</a>
 		</div>
-		<div class="row" ng-if="(resultsInTransposition==null && results.length>1) || (resultsInTransposition!=null && !resultsInTransposition)">
-			<div class="table-responsive">
-				<table class="table table-bordered table-hover table-striped">
-					<thead>
-						<tr >
-							<th ng-if="resultsAsJSON">JSON</th>
-							<th ng-if="!resultsAsJSON" ng-repeat="apiRequestResponseParameter in apiRequestResponseParameters">{{ apiRequestResponseParameter.name }}</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-if="resultsAsJSON" ng-repeat="result in results">
-							<td>{{ result }}</td>
-						</tr>
-						<tr ng-if="!resultsAsJSON" ng-repeat="result in results">
-							<td ng-repeat="value in result">{{ result[apiRequestResponseParameters[$index].name] }}</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div class="row" ng-if="(resultsInTransposition==null && results.length==1) || resultsInTransposition">
-			<div class="table-responsive">
-				<table class="table table-bordered table-hover table-striped">
-					<tr ng-if="resultsAsJSON">
-						<td class="headerCell">JSON</td>
-						<td ng-repeat="result in results" >{{ result }}</td>
-					</tr>
-					<tr ng-if="!resultsAsJSON" ng-repeat="apiRequestResponseParameter in apiRequestResponseParameters">
-						<td class="headerCell">{{ apiRequestResponseParameter.name }}</td>
-						<td ng-repeat="result in results">{{ result[apiRequestResponseParameter.name] }}</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-		<div class="row">{{ responseInfo }}</div>
 
+		<div class="row" ng-if="waitInfo!=null" style="font-weight: bold; text-align: center;">
+			<div class="well">
+				{{waitInfo}}
+			</div>
+		</div>
+			
+		<div class="row" ng-if="results.length>0">
+			<div class="well">
+				<div style="text-align: center; width: 100%;"><b>Results</b></div>
+				<div style="float:left;">{{ responseInfo }}</div>
+				<div style="float:right;">
+					asJSON=<a href="#" ng-click="switchResultsAsJSON()">{{ resultsAsJSON }}</a>,
+					inTransposition=<a href="#" ng-click="switchResultsInTransposition()">{{ resultsInTransposition==null ? "auto" : resultsInTransposition }}</a>
+				</div>
+				<div style="clear: both;"></div>
+				<div class="table-responsive" ng-if="(resultsInTransposition==null && results.length>1) || (resultsInTransposition!=null && !resultsInTransposition)">
+					<table class="table table-bordered table-hover table-striped">
+						<thead>
+							<tr >
+								<th ng-if="resultsAsJSON">JSON</th>
+								<th ng-if="!resultsAsJSON" ng-repeat="apiRequestResponseParameter in apiRequestResponseParameters">{{ apiRequestResponseParameter.name }}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-if="resultsAsJSON" ng-repeat="result in results">
+								<td>{{ result }}</td>
+							</tr>
+							<tr ng-if="!resultsAsJSON" ng-repeat="result in results">
+								<td ng-repeat="value in result">{{ result[apiRequestResponseParameters[$index].name] }}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="table-responsive" ng-if="(resultsInTransposition==null && results.length==1) || resultsInTransposition">
+					<table class="table table-bordered table-hover table-striped">
+						<tr ng-if="resultsAsJSON">
+							<td class="headerCell" style="text-align: right; width: 50px;">JSON</td>
+							<td ng-repeat="result in results" >{{ result }}</td>
+						</tr>
+						<tr ng-if="!resultsAsJSON" ng-repeat="apiRequestResponseParameter in apiRequestResponseParameters">
+							<td class="headerCell" style="text-align: right; width: 220px;">{{ apiRequestResponseParameter.name }}</td>
+							<td ng-repeat="result in results">{{ result[apiRequestResponseParameter.name] }}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div class="row" ng-if="responseInfo!=null && (results==null || results.length==0)" style="text-align: center;">
+			<div class="well">
+				{{ responseInfo }}
+			</div>
+		</div>
+		
 	</div>
 </body>
 </html>
